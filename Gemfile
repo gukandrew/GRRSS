@@ -75,3 +75,4 @@ group :test do
 end
 
 gem "slim-rails", "~> 3.6"
+gem "dotenv-rails", "~> 2.8", groups: [:development, :test]
