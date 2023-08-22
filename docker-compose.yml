@@ -15,6 +15,19 @@ services:
       - POSTGRES_PASSWORD=grrss_secret
     ports:
       - 5432:5432
+  rabbitmq:
+    image: rabbitmq:management-alpine
+    deploy:
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - "node.role==manager"
+    environment:
+      - RABBITMQ_DEFAULT_USER=grrss
+      - RABBITMQ_DEFAULT_PASS=grrss_secret
+    ports:
+      - 5672:5672
+      - 15672:15672
 
 volumes:
   db-data:
