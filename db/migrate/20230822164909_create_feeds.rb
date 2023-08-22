@@ -1,0 +1,11 @@
+class CreateFeeds < ActiveRecord::Migration[7.0]
+  def change
+    create_table :feeds do |t|
+      t.string :url
+      t.string :name
+      t.boolean :active
+
+      t.timestamps
+    end
+  end
+end

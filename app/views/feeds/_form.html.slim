@@ -1,0 +1,22 @@
+= form_with(model: @feed) do |form|
+  - if @feed.errors.any?
+    div style="color: red"
+      h2 = "#{pluralize(@feed.errors.count, "error")} prohibited this feed from being saved:"
+      ul
+        - @feed.errors.each do |error|
+          li = error.full_message
+
+  div
+    = form.label :url, style: "display: block"
+    = form.text_field :url
+
+  div
+    = form.label :name, style: "display: block"
+    = form.text_field :name
+
+  div
+    = form.label :active, style: "display: block"
+    = form.check_box :active
+
+  div
+    = form.submit
