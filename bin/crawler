@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+cd rss_service && go run .

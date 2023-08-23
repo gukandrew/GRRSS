@@ -1,0 +1,5 @@
+web: unset PORT && env RUBY_DEBUG_OPEN=true ror/bin/rails server
+js: yarn --cwd ror build --watch
+css: yarn --cwd ror watch:css
+go: bin/crawler
+consumer: ror/bin/rails runner "RssConsumer.new.start"
