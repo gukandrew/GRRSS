@@ -1,8 +1,12 @@
 Rails.application.routes.draw do
   resources :items
-  resources :feeds
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
-  # Defines the root path route ("/")
+  resources :feeds do
+    collection do
+      get :import_feeds, to: 'feeds#import_feeds'
+      post :import_feeds, to: 'feeds#create_feeds'
+    end
+  end
+
   root "feeds#index"
 end

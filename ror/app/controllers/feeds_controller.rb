@@ -1,6 +1,21 @@
 class FeedsController < ApplicationController
   before_action :set_feed, only: %i[ show edit update destroy ]
 
+  def import_feeds
+  end
+
+  def create_feeds
+    urls = create_feed_urls
+
+    connection = Bunny.new(ENV['RABBITMQ_URL'])
+    connection.start
+
+    @channel = connection.create_channel
+    @queue = @channel.queue('service_rss_feed_in')
+
+    @queue.publish(urls.to_json)
+  end
+
   # GET /feeds or /feeds.json
   def index
     @feeds = Feed.all
@@ -66,5 +81,16 @@ class FeedsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def feed_params
       params.require(:feed).permit(:url, :name, :active)
+    end
+
+    def create_feed_params
+      params.require(:urls)
+    end
+
+    def create_feed_urls
+      urls = create_feed_params.split("\n")
+
+      parser = URI::DEFAULT_PARSER
+      urls.select { |url| parser.make_regexp.match?(url) }
     end
 end
