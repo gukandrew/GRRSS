@@ -20,5 +20,6 @@ module Grrss
     # config.eager_load_paths << Rails.root.join("extras")
 
     config.autoload_paths << "#{config.root}/app/consumers"
+    config.autoload_paths << "#{config.root}/app/services"
   end
 end
