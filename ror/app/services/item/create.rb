@@ -3,7 +3,7 @@
 class Item::Create
   include Service
 
-  attr_accessor :item, :params, :admin_action
+  attr_accessor :item, :params, :admin_action, :feed
 
   def call(params = {}, scope = Item.all, admin_action: false)
     @admin_action = admin_action
@@ -21,7 +21,16 @@ class Item::Create
     item
   end
 
-  def before_save; end
+  def before_save
+    source_url = item.source_url.gsub(%r{/$}, '') # remove ending slash from source_url
+
+    @feed = Feed.find_or_initialize_by(url: source_url) do |feed|
+      feed.name = item['source']
+    end
+
+    feed.update(active: true) # reactivates feed if it was deactivated
+    item.feed_id = @feed.id
+  end
 
   def after_save; end
 
