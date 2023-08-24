@@ -14,6 +14,8 @@ class FeedsController < ApplicationController
     @queue = @channel.queue('service_rss_feed_in')
 
     @queue.publish(urls.to_json)
+
+    redirect_to items_path, notice: "Feeds are being processed. Please wait a few minutes and refresh the page!"
   end
 
   # GET /feeds or /feeds.json
