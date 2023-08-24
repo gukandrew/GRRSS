@@ -11,5 +11,11 @@ class CreateItems < ActiveRecord::Migration[7.0]
 
       t.timestamps
     end
+
+    add_index :items, :title
+    add_index :items, :source
+    add_index :items, :source_url
+    add_index :items, :published_at
+    add_index :items, [:title, :source], unique: true
   end
 end
