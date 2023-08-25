@@ -8,6 +8,6 @@ Rails.application.routes.draw do
     end
   end
 
-  root "feeds#index"
-  get '*path', to: 'feeds#index', via: :all
+  root "homepage#index"
+  get '*path', to: 'homepage#index', via: :all
 end
