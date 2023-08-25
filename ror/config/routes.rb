@@ -9,4 +9,5 @@ Rails.application.routes.draw do
   end
 
   root "feeds#index"
+  get '*path', to: 'feeds#index', via: :all
 end
