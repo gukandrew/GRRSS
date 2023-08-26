@@ -21,7 +21,7 @@ const Add = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    fetch('/feeds/import_feeds', {
+    fetch('/api/feeds/import_feeds', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
