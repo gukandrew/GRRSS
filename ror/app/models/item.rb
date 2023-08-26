@@ -6,4 +6,10 @@ class Item < ApplicationRecord
   validates :published_at, presence: true
 
   validates :title, uniqueness: { scope: :source }
+
+  def as_json(args)
+    super(args).merge({
+      published_at: self.published_at.to_i,
+    })
+  end
 end

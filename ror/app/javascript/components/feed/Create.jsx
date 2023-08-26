@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 
 const Add = () => {
-  const placeholderUrls = ['https://techcrunch.com/feed', 'https://www.wired.com/feed/rss', 'https://www.theverge.com/rss/index.xml'];
+  const placeholderUrls = [
+    'http://feeds.feedburner.com/ItsFoss',
+    'https://itc.ua/ua/feed/',
+    'https://blog.uaid.net.ua/feed/',
+  ];
   const [feedUrls, setFeedUrls] = useState(placeholderUrls.join("\n"));
   const [downloadNow, setDownloadNow] = useState(true);
   const [response, setResponse] = useState({ status: 0, message: null });
