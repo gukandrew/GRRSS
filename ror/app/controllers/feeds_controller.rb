@@ -7,7 +7,7 @@ class FeedsController < ApplicationController
   def create_feeds
     Bunny::UrlsTrigger.call(create_feed_urls)
 
-    redirect_to items_path, notice: "Feeds are being processed. Please wait a few minutes and refresh the page!"
+    render json: { success: 1, message: "Feeds are being processed. Please wait a few minutes and refresh the page!" }
   end
 
   # GET /feeds or /feeds.json
@@ -78,11 +78,11 @@ class FeedsController < ApplicationController
     end
 
     def create_feed_params
-      params.require(:urls)
+      params.permit(:urls)
     end
 
     def create_feed_urls
-      urls = create_feed_params.split("\n")
+      urls = create_feed_params[:urls].split("\n")
 
       parser = URI::DEFAULT_PARSER
       urls.select { |url| parser.make_regexp.match?(url) }
