@@ -5,6 +5,22 @@ class Api::FeedsController < ApplicationController
     render json: { success: 1, message: "Feeds are being processed. Please wait a few minutes and refresh the page!" }
   end
 
+  def index
+    @feeds = Feed.all
+
+    render json: { success: 1, records: @feeds }
+  end
+
+  def update
+    @feed = Feed.find(params[:id])
+
+    if @feed.update(feed_params)
+      render json: { success: 1, message: "Feed has been successfully updated!" } and return
+    end
+
+    render json: { success: 0, message: @feed.errors.full_messages.join(", ") }
+  end
+
   private
 
   def create_feed_params
@@ -16,5 +32,9 @@ class Api::FeedsController < ApplicationController
 
     parser = URI::DEFAULT_PARSER
     urls.select { |url| parser.make_regexp.match?(url) }
+  end
+
+  def feed_params
+    params.require(:feed).permit(:url, :name, :active)
   end
 end
