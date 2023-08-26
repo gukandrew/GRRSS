@@ -43,7 +43,7 @@ const Index = () => {
   const renderRecords = () => {
     return records.map(record => {
       return (
-        <div className="list-group-item list-group-item-action" aria-current="true" key={record.id} onClick={() => openEditModal(record)}>
+        <div className="list-group-item list-group-item-action" aria-current="true" key={record.id} role="button" onClick={() => openEditModal(record)}>
           <div className="d-flex w-100 justify-content-between">
             <h5 className="mb-1">
               {faviconUrl(record.url)}
@@ -102,6 +102,26 @@ const Index = () => {
       });
   }
 
+  const handleDestroy = (record) => {
+    if (confirm('Are you sure?')) {
+      fetch(`/api/feeds/${record.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        }
+      }).then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            setRecords(records.filter(r => r.id !== record.id));
+            modal.current.hide();
+          } else {
+            alert('Something went wrong! Check the enered data and try again.');
+          }
+        });
+    }
+  }
+
   return <div className="container mt-3">
     <div className="list-group">
       {renderRecords()}
@@ -138,13 +158,19 @@ const Index = () => {
                 </div>
               </div>
 
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
-                  Close
+              <div className="modal-footer justify-content-between">
+                <button type="button" className="btn btn-danger me-1" onClick={() => handleDestroy(editRecord)}>
+                  Destroy
                 </button>
-                <button type="submit" className="btn btn-primary">
-                  Update
-                </button>
+
+                <div>
+                  <button type="submit" className="btn btn-primary me-1">
+                    Update
+                  </button>
+                  <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
+                    Close
+                  </button>
+                </div>
               </div>
             </div>
           </form>

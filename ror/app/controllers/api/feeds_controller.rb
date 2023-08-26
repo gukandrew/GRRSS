@@ -21,6 +21,16 @@ class Api::FeedsController < ApplicationController
     render json: { success: 0, message: @feed.errors.full_messages.join(", ") }
   end
 
+  def destroy
+    @feed = Feed.find(params[:id])
+
+    if @feed.destroy
+      render json: { success: 1, message: "Feed has been successfully deleted!" } and return
+    end
+
+    render json: { success: 0, message: @feed.errors.full_messages.join(", ") }
+  end
+
   private
 
   def create_feed_params
