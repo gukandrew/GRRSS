@@ -35,9 +35,9 @@ const Index = () => {
     }
 
     const urlObject = new URL(url);
-    const faviconUrl = `${urlObject.protocol}//${urlObject.hostname}/favicon.ico`;
+    const path = `https://www.google.com/s2/favicons?sz=256&domain=${urlObject.hostname}`;
 
-    return <img src={faviconUrl} width="20" height="20" alt="" className="me-1" title={url} />;
+    return <img src={path} width="20" height="20" alt="" className="me-1" title={url} />;
   }
 
   const renderRecords = () => {
