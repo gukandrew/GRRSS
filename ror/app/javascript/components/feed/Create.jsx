@@ -1,14 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+import { fetchStatistics } from "../services/statistics";
+import { useStorage } from '../services/storage';
 
 const Add = () => {
+  const { getItem, setItem } = useStorage();
   const placeholderUrls = [
     'http://feeds.feedburner.com/ItsFoss',
     'https://itc.ua/ua/feed/',
     'https://blog.uaid.net.ua/feed/',
   ];
+  const navigate = useNavigate();
   const [feedUrls, setFeedUrls] = useState(placeholderUrls.join("\n"));
   const [downloadNow, setDownloadNow] = useState(true);
   const [response, setResponse] = useState({ status: 0, message: null });
+  // const [formSubmitted, setFormSubmitted] = useState(0);
+  const statistics = getItem('statistics') || { feeds: 0, items: 0 };
+  const [statisticsCached, setStatisticsCached] = useState(statistics);
+  let updater = useRef(null);
+  let updaterTimeout = useRef(null);
 
   const handleChange = (event) => {
     setFeedUrls(event.target.value);
@@ -16,10 +26,6 @@ const Add = () => {
 
   const handleDownloadNowChange = (event) => {
     setDownloadNow(event.target.checked);
-  }
-
-  const navigate = (path = '/') => {
-    window.location.replace(path)
   }
 
   const handleSubmit = (event) => {
@@ -37,12 +43,24 @@ const Add = () => {
         setResponse(data);
 
         if (data.success) {
-          setTimeout(() => {
-            navigate('/items')
-          }, 1000);
+          updater.current = setInterval(() => fetchStatistics(setItem), 500);
         }
       });
   }
+
+  const stopUpdaterAndGoToItemsPage = () => {
+    clearTimeout(updaterTimeout.current);
+    clearInterval(updater.current);
+    navigate('/items');
+  }
+
+  useEffect(() => {
+    updaterTimeout.current = setTimeout(() => stopUpdaterAndGoToItemsPage(), 5000); // stop updater after 5 seconds
+    if (statisticsCached.items > 0 && statisticsCached.items < statistics.items) { // new items added
+      stopUpdaterAndGoToItemsPage();
+    }
+    setStatisticsCached(statistics);
+  }, [statistics])
 
   const alertMsg = () => {
     if (response.status === 0) {
@@ -61,7 +79,7 @@ const Add = () => {
     <form onSubmit={handleSubmit}>
       <div className="mb-3">
         <label htmlFor="feed_urls" className="form-label">Feed URLs</label>
-        <textarea className="form-control" id="feed_urls" rows="10" aria-describedby="feed_urls_help" onChange={handleChange} value={feedUrls} />
+        <textarea className="form-control" id="feed_urls" rows="10" aria-describedby="feed_urls_help" onChange={handleChange} value={feedUrls} required={true} />
         <div id="feed_urls_help" className="form-text">Feed urls seperated by new lines</div>
       </div>
 

@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom"
 import { Modal } from "bootstrap"
 import ArrowsComponent from "../common/arrows_control";
 import { formatDate } from "../../utils/datetime.js";
 
 const Index = () => {
   const [records, setRecords] = useState([]);
-  const [updatedTimestamp, _setUpdatedTimestamp] = useState([]);
   const [activeRecordIndex, setActiveRecordIndex] = useState(null);
   const [viewRecord, setViewRecord] = useState({
     id: null,
@@ -20,16 +20,20 @@ const Index = () => {
     updated_at: 0,
   });
   const modal = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => { // This will run only once for modal initialization
-    modal.current = new Modal('#viewRecordModal', {
-      keyboard: true
-    })
+    const domModal = document.getElementById('viewRecordModal');
 
-    var domModal = document.getElementById('viewRecordModal');
-    domModal.addEventListener('hidden.bs.modal', function () {
-      setActiveRecordIndex(null)
-    });
+    if (domModal) {
+      modal.current = new Modal('#viewRecordModal', {
+        keyboard: true
+      })
+
+      domModal.addEventListener('hidden.bs.modal', function () {
+        setActiveRecordIndex(null)
+      });
+    }
   }, [])
 
   useEffect(() => {
@@ -50,10 +54,13 @@ const Index = () => {
     }).then(response => response.json())
       .then(data => {
         if (data.success) {
+          if (data.records.length === 0) {
+            return navigate('/')
+          }
           setRecords(data.records);
         }
       });
-  }, [updatedTimestamp])
+  }, [])
 
   const handleKeydown = (event) => {
     if (event.key === 'ArrowRight') {
@@ -120,12 +127,11 @@ const Index = () => {
   }
 
   return <div className="container mt-3" onKeyDown={handleKeydown}>
-
     <div className="list-group">
       {renderRecords()}
     </div>
 
-    <div className="modal fade" id="viewRecordModal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="viewRecordModalLabel" aria-hidden="true">
+    <div className="modal fade " id="viewRecordModal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="viewRecordModalLabel" aria-hidden="true">
       <div className="modal-dialog modal-lg">
         <div className="modal-content">
           <ArrowsComponent onLeftArrowClick={previousRecord} onRightArrowClick={nextRecord}>

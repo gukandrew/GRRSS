@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { Modal } from "bootstrap"
 import { formatDate } from "../../utils/datetime.js";
 
@@ -7,6 +8,7 @@ const Index = () => {
   const [updatedTimestamp, _setUpdatedTimestamp] = useState([]);
   const [editRecord, setEditRecord] = useState({ name: '', url: '', active: false});
   const modal = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => { // This will run only once for modal initialization
     modal.current = new Modal('#editRecordModal', {
@@ -24,6 +26,9 @@ const Index = () => {
     }).then(response => response.json())
       .then(data => {
         if (data.success) {
+          if (data.records.length === 0) {
+            return navigate('/')
+          }
           setRecords(data.records);
         }
       });
@@ -94,7 +99,6 @@ const Index = () => {
       .then(data => {
         if (data.success) {
           updateRecordLocally(editRecord);
-          // setUpdatedTimestamp(Date.now()); // This will trigger useEffect() to fetch the latest records
           modal.current.hide();
         } else {
           alert('Something went wrong! Check the enered data and try again.');
@@ -115,6 +119,9 @@ const Index = () => {
           if (data.success) {
             setRecords(records.filter(r => r.id !== record.id));
             modal.current.hide();
+            if (records.length === 1) {
+              navigate('/');
+            }
           } else {
             alert('Something went wrong! Check the enered data and try again.');
           }
