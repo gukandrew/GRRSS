@@ -5,8 +5,21 @@ import ArrowsComponent from "../common/arrows_control";
 import { formatDate } from "../../utils/datetime.js";
 
 const Index = () => {
+  const [feeds, setFeeds] = useState([]);
   const [records, setRecords] = useState([]);
   const [activeRecordIndex, setActiveRecordIndex] = useState(null);
+  const [updatedAt, setUpdatedAt] = useState(0);
+  const [feedsSelected, setFeedsSelected] = useState(localStorage.getItem('feedsSelected') ? JSON.parse(localStorage.getItem('feedsSelected')) : []);
+  const [orderBy, setOrderBy] = useState(localStorage.getItem('orderBy') ? localStorage.getItem('orderBy') : 'desc');
+
+  useEffect(() => {
+    localStorage.setItem('feedsSelected', JSON.stringify(feedsSelected));
+  }, [feedsSelected])
+
+  useEffect(() => {
+    localStorage.setItem('orderBy', orderBy);
+  }, [orderBy])
+
   const [viewRecord, setViewRecord] = useState({
     id: null,
     title: '',
@@ -45,7 +58,43 @@ const Index = () => {
   }, [activeRecordIndex])
 
   useEffect(() => {
-    fetch('/api/items', {
+    (async () => {
+      const data = await fetchFeeds();
+      if (data.success) {
+        setFeeds(data.records);
+      }
+
+      if (feedsSelected.length === 0) {
+        selectAllFeeds(data.records);
+      }
+    })();
+  }, [])
+
+  useEffect(() => {
+    fetchRecords();
+  }, [orderBy, feedsSelected])
+
+  const fetchFeeds = () => {
+    return fetch('/api/feeds', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      }
+    }).then(response => response.json())
+  }
+
+  const selectAllFeeds = (records) => {
+    setFeedsSelected(records.map((feed) => feed.id));
+  }
+
+  const fetchRecords = () => {
+    const queryParams = new URLSearchParams();
+
+    queryParams.append('order_by', orderBy);
+    feedsSelected.forEach((feedId) => queryParams.append('feed_ids[]', feedId));
+
+    fetch('/api/items?' + queryParams.toString(), {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -58,9 +107,10 @@ const Index = () => {
             return navigate('/')
           }
           setRecords(data.records);
+          setUpdatedAt(Date.now());
         }
       });
-  }, [])
+  }
 
   const handleKeydown = (event) => {
     if (event.key === 'ArrowRight') {
@@ -92,22 +142,51 @@ const Index = () => {
     return text;
   }
 
-  const renderRecords = () => {
-    return records.map((record, index) => {
-      return (
-        <div className="list-group-item list-group-item-action" aria-current="true" key={record.id} role="button" onClick={() => setActiveRecordIndex(index)} index={index}>
-          <div className="d-flex w-100 justify-content-between">
-            <h5 className="mb-1">
-              {faviconUrl(record.source_url)}
+  const selectFeed = (feedId) => {
+    const index = feedsSelected.indexOf(feedId);
 
-              {record.title}
-            </h5>
-            <small>{formatDate(record.published_at)}</small>
-          </div>
-          {/* <p className="mb-1">Some placeholder content in a paragraph.</p> */}
-          <small>{textDescription(record.description)}</small>
+    if (index !== -1) {
+      setFeedsSelected([...feedsSelected.slice(0, index), ...feedsSelected.slice(index + 1)]);
+    } else {
+      setFeedsSelected([...feedsSelected, feedId]);
+    }
+  }
+
+  const isFeedSelected = (feedId) => {
+    return feedsSelected.indexOf(feedId) > -1;
+  }
+
+  const renderFilterFeedsOptions = () => {
+    return feeds.map((feed) => {
+      return (
+        <div className="form-check ms-3" key={feed.id}>
+          <input className="form-check-input" type="checkbox" value={feed.id} id="feedsSelected" onChange={() => selectFeed(feed.id)} checked={isFeedSelected(feed.id)} />
+          <label className="form-check-label" htmlFor="feedsSelected">
+            {feed.name}
+          </label>
         </div>
       )
+    })
+  }
+
+  const renderRecords = () => {
+    return records.map((record, index) => {
+      // if (record.feed_id in feedsSelected) {
+        return (
+          <div className="list-group-item list-group-item-action" aria-current="true" key={record.id} role="button" onClick={() => setActiveRecordIndex(index)} index={index}>
+            <div className="d-flex w-100 justify-content-between">
+              <h5 className="mb-1">
+                {faviconUrl(record.source_url)}
+
+                {record.title}
+              </h5>
+              <small>{formatDate(record.published_at)}</small>
+            </div>
+            {/* <p className="mb-1">Some placeholder content in a paragraph.</p> */}
+            <small>{textDescription(record.description)}</small>
+          </div>
+        )
+      // }
     })
   }
 
@@ -127,6 +206,37 @@ const Index = () => {
   }
 
   return <div className="container mt-3" onKeyDown={handleKeydown}>
+    <div className="row">
+      <div className="col-md-3">
+        <div className="dropdown">
+          <button className="btn btn-secondary dropdown-toggle" type="button" id="checkboxDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            Filter
+          </button>
+          <div className="dropdown-menu p-2" aria-labelledby="checkboxDropdown">
+            Order by:
+            <select className="form-select form-select-sm mb-3" onChange={(e) => { setOrderBy(e.target.value) }} defaultValue={orderBy}>
+              <option value="desc">Newest</option>
+              <option value="asc">Oldest</option>
+            </select>
+
+            Show feeds:
+            <form>
+              {renderFilterFeedsOptions()}
+            </form>
+          </div>
+        </div>
+      </div>
+      <div className="col-md-6 text-center">
+        <button type="button" className="btn btn-primary mb-3" onClick={fetchRecords}>
+          <i className="bi bi-arrow-clockwise"></i>
+          Refresh
+        </button>
+      </div>
+      <div className="col-md-3 text-end">
+        Updated at: <span className="badge bg-success">{formatDate(updatedAt/1000)}</span>
+      </div>
+    </div>
+
     <div className="list-group">
       {renderRecords()}
     </div>
