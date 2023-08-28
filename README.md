@@ -27,3 +27,12 @@ How to clear cron?
 ```sh
 ror/bin/bundle exec whenever -c
 ```
+
+Docker
+
+## How to build docker image?
+RSS Service
+```sh
+docker build --tag rss_service -f rss_service/Dockerfile rss_service
+```
+

@@ -15,6 +15,14 @@ services:
       - POSTGRES_PASSWORD=grrss_secret
     ports:
       - 5432:5432
+    networks:
+      - grrss_network
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "grrss"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+
   rabbitmq:
     image: rabbitmq:management-alpine
     deploy:
@@ -28,6 +36,50 @@ services:
     ports:
       - 5672:5672
       - 15672:15672
+    networks:
+      - grrss_network
+    healthcheck:
+      test: [ "CMD", "nc", "-z", "localhost", "5672" ]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+
+  rss_service:
+    build:
+      context: rss_service
+      dockerfile: ./Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+          condition: service_healthy
+    networks:
+      - grrss_network
+    environment:
+      - RABBITMQ_URL=amqp://grrss:grrss_secret@rabbitmq:5672
+
+  ror:
+    build:
+      context: ror
+      dockerfile: ./Dockerfile
+    depends_on:
+      - db
+      - rabbitmq
+      - rss_service
+    networks:
+      - grrss_network
+    environment:
+      - RAILS_ENV=development
+      - RAILS_SERVE_STATIC_FILES=true
+      - RABBITMQ_URL=amqp://grrss:grrss_secret@rabbitmq:5672
+      - GRRSS_DATABASE_HOST=db
+      - GRRSS_DATABASE_USERNAME=grrss
+      - GRRSS_DATABASE_PASSWORD=grrss_secret
+    ports:
+      - 3000:3000
 
 volumes:
   db-data:
+
+networks:
+  grrss_network:

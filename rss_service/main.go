@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"os"
 	"runtime"
 	"time"
 
@@ -23,11 +24,19 @@ type ResponseJSON struct {
 	Items []reader.RssItem `json:"items"`
 }
 
+func getEnv(key, fallback string) string {
+    if value, ok := os.LookupEnv(key); ok {
+        return value
+    }
+    return fallback
+}
+
 func main() {
 	hello()
 
 	var err error
-	conn, err = amqp.Dial("amqp://grrss:grrss_secret@localhost:5672")
+	var amqpConnect string = getEnv("RABBITMQ_URL", "amqp://grrss:grrss_secret@localhost:5672")
+	conn, err = amqp.Dial(amqpConnect)
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
