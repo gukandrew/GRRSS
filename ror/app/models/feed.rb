@@ -12,6 +12,9 @@
 class Feed < ApplicationRecord
   has_many :items, dependent: :destroy
 
+  validates :name, presence: true
+  validates :url, presence: true, uniqueness: true
+
   def self.trigger_active!
     urls = Feed.where(active: true).pluck(:url)
 
