@@ -168,20 +168,20 @@ const Index = () => {
   const renderRecords = () => {
     return records.map((record, index) => {
       // if (record.feed_id in feedsSelected) {
-        return (
-          <div className="list-group-item list-group-item-action" aria-current="true" key={record.id} role="button" onClick={() => setActiveRecordIndex(index)} index={index}>
-            <div className="d-flex w-100 justify-content-between">
-              <h5 className="mb-1">
-                {faviconUrl(record.source_url)}
+      return (
+        <div className="list-group-item list-group-item-action" aria-current="true" key={record.id} role="button" onClick={() => setActiveRecordIndex(index)} index={index}>
+          <div className="d-flex w-100 justify-content-between">
+            <h5 className="mb-1">
+              {faviconUrl(record.source_url)}
 
-                {record.title}
-              </h5>
-              <small>{formatDate(record.published_at)}</small>
-            </div>
-            {/* <p className="mb-1">Some placeholder content in a paragraph.</p> */}
-            <small>{textDescription(record.description)}</small>
+              {record.title}
+            </h5>
+            <small>{formatDate(record.published_at)}</small>
           </div>
-        )
+          {/* <p className="mb-1">Some placeholder content in a paragraph.</p> */}
+          <small>{textDescription(record.description)}</small>
+        </div>
+      )
       // }
     })
   }
@@ -234,7 +234,7 @@ const Index = () => {
         </button>
       </div>
       <div className="col-md-3 text-end">
-        Updated at: <span className="badge bg-success">{formatDate(updatedAt/1000)}</span>
+        Updated at: <span className="badge bg-success">{formatDate(updatedAt / 1000)}</span>
       </div>
     </div>
 

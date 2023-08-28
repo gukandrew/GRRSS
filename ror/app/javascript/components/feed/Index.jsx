@@ -9,7 +9,7 @@ const Index = () => {
   const { setItem } = useStorage();
   const [records, setRecords] = useState([]);
   const [updatedTimestamp, _setUpdatedTimestamp] = useState([]);
-  const [editRecord, setEditRecord] = useState({ name: '', url: '', active: false});
+  const [editRecord, setEditRecord] = useState({ name: '', url: '', active: false });
   const modal = useRef(null);
   const navigate = useNavigate();
 
