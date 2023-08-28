@@ -13,5 +13,8 @@ class Bunny::UrlsTrigger
     @queue = @channel.queue('service_rss_feed_in')
 
     @queue.publish(urls.to_json)
+
+  ensure
+    connection.close
   end
 end

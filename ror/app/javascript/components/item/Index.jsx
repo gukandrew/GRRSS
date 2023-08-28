@@ -33,7 +33,6 @@ const Index = () => {
     updated_at: 0,
   });
   const modal = useRef(null);
-  const navigate = useNavigate();
 
   useEffect(() => { // This will run only once for modal initialization
     const domModal = document.getElementById('viewRecordModal');
@@ -103,9 +102,6 @@ const Index = () => {
     }).then(response => response.json())
       .then(data => {
         if (data.success) {
-          if (data.records.length === 0) {
-            return navigate('/')
-          }
           setRecords(data.records);
           setUpdatedAt(Date.now());
         }
@@ -205,6 +201,11 @@ const Index = () => {
     return <div dangerouslySetInnerHTML={{ __html: record.description }} />;
   }
 
+  const handleRefreshClick = () => {
+    fetchFeeds();
+    fetchRecords();
+  }
+
   return <div className="container mt-3" onKeyDown={handleKeydown}>
     <div className="row">
       <div className="col-md-3">
@@ -227,7 +228,7 @@ const Index = () => {
         </div>
       </div>
       <div className="col-md-6 text-center">
-        <button type="button" className="btn btn-primary mb-3" onClick={fetchRecords}>
+        <button type="button" className="btn btn-primary mb-3" onClick={handleRefreshClick}>
           <i className="bi bi-arrow-clockwise"></i>
           Refresh
         </button>

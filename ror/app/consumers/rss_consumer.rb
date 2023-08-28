@@ -11,11 +11,17 @@ class RssConsumer
   end
 
   def start
+    puts '🐰 Waiting for messages. To exit press CTRL+C'
+    puts 'RAILS_ENV: ' + ENV['RAILS_ENV']
+
     @queue.subscribe do |_delivery_info, _metadata, body|
+      puts "🐰 Received message!"
       # Process and save parsed RSS feed data to the database
       parsed_data = JSON.parse(body)
 
       parsed_data['items'].each do |item|
+        puts "Processing item: #{item['source']}"
+
         record = Item::Create.call(item).save
 
         if record.persisted?
@@ -28,8 +34,8 @@ class RssConsumer
 
     loop { sleep 1 }
   rescue Interrupt => _
-    connection.close
-
     exit(0)
+  ensure
+    connection.close
   end
 end

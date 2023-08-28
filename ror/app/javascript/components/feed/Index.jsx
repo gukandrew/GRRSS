@@ -2,8 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Modal } from "bootstrap"
 import { formatDate } from "../../utils/datetime.js";
+import { fetchStatistics } from "../services/statistics";
+import { useStorage } from '../services/storage';
 
 const Index = () => {
+  const { setItem } = useStorage();
   const [records, setRecords] = useState([]);
   const [updatedTimestamp, _setUpdatedTimestamp] = useState([]);
   const [editRecord, setEditRecord] = useState({ name: '', url: '', active: false});
@@ -120,6 +123,7 @@ const Index = () => {
             setRecords(records.filter(r => r.id !== record.id));
             modal.current.hide();
             if (records.length === 1) {
+              fetchStatistics(setItem);
               navigate('/');
             }
           } else {

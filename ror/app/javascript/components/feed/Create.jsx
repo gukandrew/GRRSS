@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchStatistics } from "../services/statistics";
 import { useStorage } from '../services/storage';
@@ -44,6 +44,7 @@ const Add = () => {
 
         if (data.success) {
           updater.current = setInterval(() => fetchStatistics(setItem), 500);
+          localStorage.setItem('feedsSelected', JSON.stringify([])); // reset selected feeds
         }
       });
   }
