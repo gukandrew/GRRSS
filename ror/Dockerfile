@@ -1,6 +1,10 @@
 FROM ruby:3.2.2-alpine as base
 
-RUN apk --update add build-base nodejs tzdata postgresql-dev postgresql-client libxslt-dev libxml2-dev yarn
+RUN apk --update add build-base nodejs tzdata \
+    postgresql-dev postgresql-client libxslt-dev \
+    libxml2-dev yarn ruby-nokogiri xz \
+    # for nokogiri
+    gcompat
 
 WORKDIR /docker/app
 
