@@ -1,12 +1,24 @@
 # GRRSS - rss app written on Ruby on Rails and Go
-
-How to start?
-Set up environment variables in ror/.env file and rss_reader/.env file. Then run:
+## How to build & run using Docker Compose?
 ```sh
-docker compose up -d
+docker compose up --build
+```
 
-rails db:create
-rails db:migrate
+Shut down
+```sh
+docker compose down
+```
+
+Drop db volume
+```sh
+docker volume rm grrss_db-data;
+```
+
+## How to start in dev mode?
+Set up environment variables in ror/.ene file. Then run:
+```sh
+docker compose up -d rabbitmq db
+ror/bin/rails db:prepare
 bin/dev
 ```
 
@@ -28,11 +40,10 @@ How to clear cron?
 ror/bin/bundle exec whenever -c
 ```
 
-Docker
-
-## How to build docker image?
-RSS Service
+## How to run tests?
 ```sh
-docker build --tag rss_service -f rss_service/Dockerfile rss_service
+docker compose up -d rabbitmq db
+cd ror
+bin/rails db:prepare
+bin/bundle exec rspec spec
 ```
-
