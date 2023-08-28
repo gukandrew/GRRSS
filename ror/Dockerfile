@@ -22,6 +22,6 @@ EXPOSE ${DEFAULT_PORT}
 
 CMD bin/rails db:prepare; \
   bin/bundle exec whenever --update-crontab -s environment=development; \
-  # rails assets:precompile; \
+  rails assets:precompile; \
   bin/rails runner "RssConsumer.new.start" & \
   bin/bundle exec rails server -p 3000 -b 0.0.0.0 -e development
