@@ -7,10 +7,10 @@ import (
 )
 
 type RssItem struct {
-	Title				string    `json:"title"`
-	Source			string    `json:"source"`
-	SourceURL		string    `json:"source_url"`
-	Link				string    `json:"link"`
+	Title       string    `json:"title"`
+	Source      string    `json:"source"`
+	SourceURL   string    `json:"source_url"`
+	Link        string    `json:"link"`
 	PublishDate time.Time `json:"publish_date"`
 	Description string    `json:"description"`
 }
@@ -40,10 +40,10 @@ func parseFeed(url string) []RssItem {
 	var items []RssItem
 	for _, item := range feed.Items {
 		items = append(items, RssItem{
-			Title: item.Title,
-			Source: feed.Title,
-			SourceURL: url,
-			Link: item.Link,
+			Title:       item.Title,
+			Source:      feed.Title,
+			SourceURL:   url,
+			Link:        item.Link,
 			PublishDate: *item.PublishedParsed,
 			Description: item.Description,
 		})

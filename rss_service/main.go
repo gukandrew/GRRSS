@@ -25,10 +25,10 @@ type ResponseJSON struct {
 }
 
 func getEnv(key, fallback string) string {
-    if value, ok := os.LookupEnv(key); ok {
-        return value
-    }
-    return fallback
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+	return fallback
 }
 
 func main() {
@@ -57,12 +57,12 @@ func prepareChannel(conn *amqp.Connection, name string) (*amqp.Channel, amqp.Que
 	failOnError(err, "Failed to open a channel")
 
 	q, err := ch.QueueDeclare(
-		name, // name
-		false,   // durable
-		false,   // delete when unused
-		false,   // exclusive
-		false,   // no-wait
-		nil,     // arguments
+		name,  // name
+		false, // durable
+		false, // delete when unused
+		false, // exclusive
+		false, // no-wait
+		nil,   // arguments
 	)
 	failOnError(err, "Failed to declare a queue")
 	return ch, q
@@ -88,7 +88,7 @@ func listenChannel(ch *amqp.Channel, q amqp.Queue) {
 			json.Unmarshal(d.Body, &urls)
 
 			items := reader.Parse(urls)
-			body, _ := json.Marshal(ResponseJSON{ Items: items })
+			body, _ := json.Marshal(ResponseJSON{Items: items})
 			log.Printf("Processed %v items!", len(items))
 
 			publishMessage(chOut, qOut, string(body))
@@ -116,9 +116,9 @@ func publishMessage(ch *amqp.Channel, q amqp.Queue, body string) {
 }
 
 func failOnError(err error, msg string) {
-  if err != nil {
-    log.Panicf("%s: %s", msg, err)
-  }
+	if err != nil {
+		log.Panicf("%s: %s", msg, err)
+	}
 }
 
 func hello() {
