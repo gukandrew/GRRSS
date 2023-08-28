@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: feeds
+#
+#  id         :bigint           not null, primary key
+#  url        :string
+#  name       :string
+#  active     :boolean
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
 class Feed < ApplicationRecord
   has_many :items, dependent: :destroy
 
