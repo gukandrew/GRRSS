@@ -19,6 +19,9 @@
 
 # Learn more: http://github.com/javan/whenever
 
+set :job_template, "/bin/sh -l -c ':job'" # alpine was complaining about not having the bash shell
+set :output, "/docker/app/log/cron_log.log" # log file for cron jobs in alpine container, change to /path/to/my/cron_log.log for local
+
 every 1.minute do
   runner "Feed.trigger_active!"
 end
