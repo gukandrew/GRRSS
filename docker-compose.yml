@@ -74,6 +74,7 @@ services:
         condition: service_started
     volumes:
       - assets-data:/docker/app/public/assets
+      - node-modules-data:/docker/app/node_modules
     networks:
       - grrss_network
     environment:
@@ -90,6 +91,7 @@ services:
 volumes:
   db-data:
   assets-data:
+  node-modules-data:
 
 networks:
   grrss_network:
