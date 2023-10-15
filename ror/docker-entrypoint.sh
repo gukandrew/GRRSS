@@ -8,7 +8,10 @@ crond
 # Precompile assets
 rails assets:precompile
 
-rm tmp/pids/server.pid
+# Remove server.pid if exists
+if [ -f tmp/pids/server.pid ]; then
+  rm tmp/pids/server.pid
+fi
 
 # Start rss consumer and rails server in parallel
 bin/rails runner "RssConsumer.new.start" &
