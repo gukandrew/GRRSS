@@ -66,9 +66,12 @@ services:
       context: ror
       dockerfile: ./Dockerfile
     depends_on:
-      - db
-      - rabbitmq
-      - rss_service
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      rss_service:
+        condition: service_started
     networks:
       - grrss_network
     environment:
