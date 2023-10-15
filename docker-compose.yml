@@ -22,7 +22,7 @@ services:
       interval: 5s
       timeout: 10s
       retries: 5
-    restart: always
+    restart: unless-stopped
 
   rabbitmq:
     image: rabbitmq:management-alpine
@@ -44,7 +44,7 @@ services:
       interval: 5s
       timeout: 10s
       retries: 5
-    restart: always
+    restart: unless-stopped
 
   rss_service:
     build:
@@ -59,7 +59,7 @@ services:
       - grrss_network
     environment:
       - RABBITMQ_URL=amqp://grrss:grrss_secret@rabbitmq:5672
-    restart: always
+    restart: unless-stopped
 
   ror:
     build:
@@ -80,7 +80,7 @@ services:
       - GRRSS_DATABASE_PASSWORD=grrss_secret
     ports:
       - 3000:3000
-    restart: always
+    restart: unless-stopped
 
 volumes:
   db-data:

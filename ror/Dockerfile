@@ -20,10 +20,9 @@ ARG DEFAULT_PORT 3000
 
 EXPOSE ${DEFAULT_PORT}
 
-CMD bin/rails db:prepare; \
-  bin/bundle exec whenever --update-crontab -s environment=development; \
-  rails assets:precompile; \
-  rm tmp/pids/server.pid; \
-  crond; \
-  bin/rails runner "RssConsumer.new.start" & \
-  bin/bundle exec rails server -p 3000 -b 0.0.0.0 -e development
+COPY --chmod=0755 docker-entrypoint.sh /usr/bin/entrypoint.sh
+# RUN chmod +x /usr/bin/entrypoint.sh
+
+STOPSIGNAL SIGQUIT
+
+CMD sh /usr/bin/entrypoint.sh
