@@ -32,7 +32,7 @@ class RssConsumer
       end
     end
 
-    loop { sleep 1 }
+    loop { sleep 180 }
   rescue Interrupt => _
     exit(0)
   ensure
