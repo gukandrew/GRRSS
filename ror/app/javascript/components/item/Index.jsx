@@ -242,7 +242,7 @@ const Index = () => {
       {renderRecords()}
     </div>
 
-    <div className="modal fade " id="viewRecordModal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="viewRecordModalLabel" aria-hidden="true">
+    <div className="modal fade " id="viewRecordModal" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="viewRecordModalLabel" aria-hidden="true">
       <div className="modal-dialog modal-lg">
         <div className="modal-content">
           <ArrowsComponent onLeftArrowClick={previousRecord} onRightArrowClick={nextRecord}>
