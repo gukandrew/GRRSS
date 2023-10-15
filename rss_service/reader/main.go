@@ -39,12 +39,17 @@ func parseFeed(url string) []RssItem {
 
 	var items []RssItem
 	for _, item := range feed.Items {
+		publishDate := time.Time{}
+		if item.PublishedParsed != nil {
+			publishDate = *item.PublishedParsed
+		}
+
 		items = append(items, RssItem{
 			Title:       item.Title,
 			Source:      feed.Title,
 			SourceURL:   url,
 			Link:        item.Link,
-			PublishDate: *item.PublishedParsed,
+			PublishDate: publishDate,
 			Description: item.Description,
 		})
 	}
