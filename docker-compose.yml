@@ -72,6 +72,8 @@ services:
         condition: service_healthy
       rss_service:
         condition: service_started
+    volumes:
+      - assets-data:/docker/app/public/assets
     networks:
       - grrss_network
     environment:
@@ -87,6 +89,7 @@ services:
 
 volumes:
   db-data:
+  assets-data:
 
 networks:
   grrss_network:
