@@ -23,6 +23,7 @@ default: &default
   host: <%= ENV["GRRSS_DATABASE_HOST"] %>
   username: <%= ENV["GRRSS_DATABASE_USERNAME"] %>
   password: <%= ENV["GRRSS_DATABASE_PASSWORD"] %>
+  port: <%= ENV["GRRSS_DATABASE_PORT"] %>
 
 development:
   <<: *default

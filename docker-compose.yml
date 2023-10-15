@@ -14,7 +14,7 @@ services:
       - POSTGRES_USER=grrss
       - POSTGRES_PASSWORD=grrss_secret
     ports:
-      - 5432:5432
+      - 54333:5432
     networks:
       - grrss_network
     healthcheck:
